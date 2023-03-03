@@ -44,11 +44,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
            const booking =req.body 
            console.log(booking);
            const query ={
-            appointmentDate: booking.appointmentDate
+            appointmentDate: booking.appointmentDate,
+            treatment:booking.treatment
            }
 
            const alreadyBooked =await bookingsCollection.find(query).toArray();
-           
+
            if (alreadyBooked.length) {
             const message = `you have already booking ${booking.appointmentDate}`
             return res.send({acknowledge: false, message})
