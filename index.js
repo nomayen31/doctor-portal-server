@@ -45,6 +45,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
            console.log(booking);
            const query ={
             appointmentDate: booking.appointmentDate,
+            email:booking.email,
             treatment:booking.treatment
            }
 
