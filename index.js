@@ -22,19 +22,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
         const bookingsCollection =client.db('doctorsPortal').collection('bookings')
 
-        app.get('/appointmentOptions', async(req, res)=>{
+        app.get('/appointmentOptions', async (req, res) => {
             const date = req.query.date;
-            // console.log(date);
-           const query ={};
-            const options =await appointmentOptionsCollection.find(query).toArray();
-            const bookingQuery = {appointmentDate: date}
-            const alreadyBooked =await bookingsCollection.find(bookingQuery).toArray();
-            options.forEach(option =>{
-                const optionBooked =alreadyBooked.filter(book => book.treatment === option.name);
-                const bookedSlots =optionBooked.map(book =>book.slot)
-                const remainingSots =option.slots.filter(slot =>!bookedSlots.includes(slot))
-                // option.slots = remainingSlots;
-                console.log(date, remainingSots.length, option.name);
+            const query = {};
+            const options = await appointmentOptionsCollection.find(query).toArray();
+
+            // get the bookings of the provided date
+            const bookingQuery = { appointmentDate: date }
+            const alreadyBooked = await bookingsCollection.find(bookingQuery).toArray();
+            
+            options.forEach(option => {
+                const optionBooked = alreadyBooked.filter(book => book.treatment === option.name);
+                const bookedSlots = optionBooked.map(book => book.slot);
+                const remainingSlots = option.slots.filter(slot => !bookedSlots.includes(slot))
+                option.slots = remainingSlots;
             })
             res.send(options);
         })
