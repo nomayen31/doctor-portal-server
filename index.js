@@ -43,6 +43,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         app.post('/bookings', async(req, res)=>{
            const booking =req.body 
            console.log(booking);
+           const query ={
+            appointmentDate: booking.appointmentDate
+           }
+
+           const alreadyBooked =await bookingsCollection.find(query).toArray();
+           
+           if (alreadyBooked.length) {
+            const message = `you have already booking ${booking.appointmentDate}`
+            return res.send({acknowledge: false, message})
+           }
+
+           
            const result =await bookingsCollection.insertOne(booking)
            res.send(result);
         })
