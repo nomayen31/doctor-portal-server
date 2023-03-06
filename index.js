@@ -21,6 +21,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         const appointmentOptionsCollection = client.db('doctorsPortal').collection('appointmentOptions')
 
         const bookingsCollection =client.db('doctorsPortal').collection('bookings')
+        const usersCollection =client.db('doctorsPortal').collection('users')
 
         app.get('/appointmentOptions', async (req, res) => {
             const date = req.query.date;
@@ -42,7 +43,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
         app.get('/bookings', async(req, res)=>{
             const email =req.query.email;
-            console.log(email);
             const query ={email: email};
             const bookings = await bookingsCollection.find(query).toArray();
             res.send(bookings);
@@ -67,6 +67,12 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
            
            const result =await bookingsCollection.insertOne(booking)
            res.send(result);
+        })
+
+        app.get('/users', async(req, res)=>{
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result)
         })
     }
     finally{
